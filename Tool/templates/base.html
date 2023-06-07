@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{% endblock %}</title>
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='plugins/fontawesome-free/css/all.min.css') }}">
+
+
+  <!-- Theme style -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='dist/css/adminlte.min.css') }}">
+  <!-- overlayScrollbars -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='plugins/overlayScrollbars/css/OverlayScrollbars.min.css') }}">
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}">
+
+  <!-- jQuery -->
+  <script src="{{ url_for('static', filename='plugins/jquery/jquery.min.js') }}"></script>
+</head>
+<body class="hold-transition sidebar-mini layout-fixed">
+<div class="wrapper">
+
+  <!-- Main Sidebar Container -->
+  <aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <!-- Brand Logo -->
+    <a href="/" class="brand-link">
+      <img src="{{ url_for('static', filename='dist/img/AdminLTELogo.png') }}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+      <span class="brand-text font-weight-light">{{user['login']}}</span>
+    </a>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+
+      <!-- Sidebar Menu -->
+      <nav class="mt-2">
+        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+          <!-- Add icons to the links using the .nav-icon class
+               with font-awesome or any other icon font library -->
+
+          <li class="nav-item">
+            <a href="./logout" class="nav-link" style="background: #c33">
+              <p>Выход</p>
+            </a>
+          </li>
+
+          {% if user['role'] == 'admin' %}
+
+          <li class="nav-header">Админка</li>
+
+          <li class="nav-item">
+            <a href="/users" class="nav-link {% if page=='users' %}active{% endif %}">
+              <i class="nav-icon fas fa-users"></i>
+
+              <p>
+                Пользователи
+              </p>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a href="/usercreate" class="nav-link {% if page=='usercreate' %}active{% endif %}">
+              <i class="nav-icon fas fa-user-plus"></i>
+              <p>
+                Создать пользователя
+              </p>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a href="/logs" class="nav-link {% if page=='logs' %}active{% endif %}">
+              <i class="nav-icon fas fa-list-ul"></i>
+              <p>
+                Логи
+              </p>
+            </a>
+          </li>
+
+          {% endif %}
+
+          <li class="nav-header">Меню</li>
+
+          <li class="nav-item">
+            <a href="/filemanager" class="nav-link {% if page=='filemanager' %}active{% endif %}">
+              <i class="nav-icon fas fa-th"></i>
+              <p>
+                Файловый менеджер
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="/proceses" class="nav-link {% if page=='proceses' %}active{% endif %}">
+              <i class="nav-icon fas fa-solid fa-terminal"></i>
+              <p>
+                Процессы
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="/statistic" class="nav-link {% if page=='statistic' %}active{% endif %}">
+              <i class="nav-icon fas fa-chart-pie"></i>
+              <p>
+                Статистика
+              </p>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a href="/containers" class="nav-link {% if page=='containers' %}active{% endif %}">
+              <i class="nav-icon fab fa-docker"></i>
+              <p>
+                Контейнеры
+              </p>
+            </a>
+          </li>
+        </ul>
+      </nav>
+      <!-- /.sidebar-menu -->
+    </div>
+    <!-- /.sidebar -->
+  </aside>
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      {% block content_head %}
+      {% endblock %}
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content">
+      {% block content %}
+      {% endblock %}
+    </section>
+    <!-- /.content -->
+  </div>
+</div>
+<!-- ./wrapper -->
+
+
+{% block modal %}
+{% endblock %}
+
+
+
+<!-- Bootstrap 4 -->
+<script src="{{ url_for('static', filename='plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+
+</body>
+</html>

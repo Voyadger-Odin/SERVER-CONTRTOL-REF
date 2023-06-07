@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+
+<!------------- Title ------------->
+{% block title %}
+Статистика
+{% endblock %}
+<!--------------------------------->
+
+<!------------- Content head ------------->
+{% block content_head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+<!---------------------------------------->
+
+
+
+<!------------- Content ------------->
+{% block content %}
+<h3>Статистика</h3>
+
+<br>
+
+<div class="card">
+  <div class="card-header">
+    <h3 class="card-title">Память</h3>
+  </div>
+  <!-- /.card-header -->
+  <div class="card-body p-0">
+    <div>
+      <canvas id="myChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%; display: block; width: 412px;" class="chartjs-render-monitor" height="250"></canvas>
+    </div>
+  </div>
+  <!-- /.card-body -->
+</div>
+
+
+
+<script>
+  const ctx = document.getElementById('myChart');
+
+  let data = {
+      labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+      datasets: [{
+        label: '# of Votes',
+        data: [12, 19, 3, 5, 2, 3],
+        borderWidth: 1
+      }]
+    }
+
+  const labels = ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange']
+  let data = {
+    labels: labels,
+    datasets: [
+      {
+        label: 'My First dataset',
+        data: [12, 19, 3, 5, 2, 3],
+
+      },
+    ]
+  };
+
+  let config = {
+    type: 'line',
+    data: data,
+    options: {
+      responsive: true,
+      plugins: {
+        title: {
+          display: true,
+          text: (ctx) => 'Chart.js Line Chart - stacked=' + ctx.chart.options.scales.y.stacked
+        },
+        tooltip: {
+          mode: 'index'
+        },
+      },
+      interaction: {
+        mode: 'nearest',
+        axis: 'x',
+        intersect: false
+      },
+      scales: {
+        x: {
+          title: {
+            display: true,
+            text: 'Month'
+          }
+        },
+        y: {
+          stacked: true,
+          title: {
+            display: true,
+            text: 'Value'
+          }
+        }
+      }
+    }
+  };
+
+  new Chart(ctx, config);
+</script>
+{% endblock %}
+<!----------------------------------->
+
+
+
+
+<!------------- Modal ------------->
+{% block modal %}
+
+
+{% endblock %}
+<!--------------------------------->

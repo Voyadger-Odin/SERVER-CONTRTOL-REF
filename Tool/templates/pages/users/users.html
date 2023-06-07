@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+<!------------- Title ------------->
+{% block title %}
+Пользователи
+{% endblock %}
+<!--------------------------------->
+
+<!------------- Content head ------------->
+{% block content_head %}
+
+{% endblock %}
+<!---------------------------------------->
+
+
+
+<!------------- Content ------------->
+{% block content %}
+<h3>Пользователи</h3>
+
+<table id="example3" class="table table-bordered table-hover">
+  <thead>
+  <tr>
+      <th style="width: 50px; text-align: center;">id</th>
+      <th>Логин</th>
+      <th>Права</th>
+  </tr>
+  </thead>
+  <tbody>
+
+  {% for user_i in users %}
+  <tr>
+      <td style="text-align: center;">{{ user_i[0] }}</td>
+      <td>{{ user_i[1] }}</td>
+      <td>{{ user_i[2] }}</td>
+  </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
+<!----------------------------------->
+
+
+
+
+<!------------- Modal ------------->
+{% block modal %}
+
+
+{% endblock %}
+<!--------------------------------->

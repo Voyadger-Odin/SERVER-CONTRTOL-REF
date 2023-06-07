@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/audioplayer.css') }}">
+</head>
+<body>
+
+
+
+<div class="player">
+        <div class="cover">
+            <img src="{{ url_for('static', filename='img/vinyl.png') }}" alt="">
+        </div>
+        <div class="info">
+            <div class="title">{{ title }}</div>
+            <div class="singer">{{ artist }}</div>
+        </div>
+        <div class="volume-box active">
+            <span class="volume-down">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-dash-lg" viewBox="0 0 16 16">
+                  <path fill-rule="evenodd" d="M2 8a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11A.5.5 0 0 1 2 8Z"/>
+                </svg>
+            </span>
+            <input type="range" class="volume-range" step="1" value="80" min="0" max="100"
+                oninput="music.volume = this.value/100">
+            <span class="volume-up">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
+                  <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"/>
+                </svg>
+            </span>
+        </div>
+        <div class="btn-box">
+
+        </div>
+        <div class="music-box">
+            <input type="range" step="1" class="seekbar" value="0" min="0" max="100" oninput="handleSeekBar()">
+
+            <audio class="music-element">
+                <source src="{{ url_for('static', filename=audio) }}" type="audio/mp3">
+            </audio>
+            <span class="current-time">0:00</span><span class="duration">0:00</span>
+            <span class="play" onclick="handlePlay()">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-play-fill" viewBox="0 0 16 16">
+                  <path d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z"/>
+                </svg>
+            </span>
+        </div>
+    </div>
+
+
+<script src="{{ url_for('static', filename='scripts/audioplayer.js') }}"></script>
+</body>
+</html>

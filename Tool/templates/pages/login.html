@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+
+    <!-- Theme style -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+</head>
+<body>
+
+<form class="login-form" action="/login" method="post">
+  <p class="login-text">
+    <span class="fa-stack fa-lg">
+      <i class="fa fa-circle fa-stack-2x"></i>
+      <i class="fa fa-lock fa-stack-1x"></i>
+    </span>
+  </p>
+  <input name="login" type="text" class="login-username" autofocus="true" required="true" placeholder="Логин" />
+  <input name="password" type="password" class="login-password" required="true" placeholder="Пароль" />
+  <input type="submit" value="Войти" class="login-submit" />
+</form>
+
+
+</body>
+</html>

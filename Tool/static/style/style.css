@@ -1,0 +1,32 @@
+
+
+.file-item:hover{
+    cursor: pointer;
+}
+
+.file-item:hover td{
+    background: #ddd;
+}
+
+.file-img{
+    width: 30px;
+    height: 30px;
+    margin-right: 20px;
+}
+
+
+.file-btn-action{
+    background: none;
+    border: none;
+}
+
+.form-check-input{
+    margin: 0;
+    padding: 0;
+    width: 15px;
+    height: 15px;
+    margin-top: 5px;
+}
+.form-check-input:hover{
+    cursor: pointer;
+}

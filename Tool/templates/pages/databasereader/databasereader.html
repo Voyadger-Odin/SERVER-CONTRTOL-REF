@@ -1,0 +1,105 @@
+{% extends 'pages/databasereader/databasereader-tmp.html' %}
+
+{% block title %}
+DataBase-Reader
+{% endblock %}
+
+{% block content %}
+
+{% if tableSelected != '' %}
+<!-- Main content -->
+
+
+
+<section class="content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-12">
+        <div class="card card-primary card-outline card-tabs">
+          <div class="card-header p-0 pt-1 border-bottom-0">
+            <ul class="nav nav-tabs" id="custom-tabs-three-tab" role="tablist">
+              <li class="nav-item">
+                <a class="nav-link active" id="custom-tabs-three-home-tab" data-toggle="pill" href="#custom-tabs-three-home" role="tab" aria-controls="custom-tabs-three-home" aria-selected="true">Данные</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" id="custom-tabs-three-profile-tab" data-toggle="pill" href="#custom-tabs-three-profile" role="tab" aria-controls="custom-tabs-three-profile" aria-selected="false">Колонки</a>
+              </li>
+            </ul>
+          </div>
+          <div class="card-body">
+            <div class="tab-content" id="custom-tabs-three-tabContent">
+              <div class="tab-pane fade show active" id="custom-tabs-three-home" role="tabpanel" aria-labelledby="custom-tabs-three-home-tab">
+                 <table id="example2" class="table table-bordered table-hover">
+          <thead>
+          <tr>
+            {% for column in tableColumns %}
+            <th>{{column[1]}}</th>
+            {% endfor %}
+          </tr>
+          </thead>
+          <tbody>
+
+          {% for item in tableData %}
+          <tr ondblclick="alert('{{ primary_keys[0][1] }}')">
+            {% for column in item %}
+            <td>{{ column }}</td>
+            {% endfor %}
+          </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+              </div>
+              <div class="tab-pane fade" id="custom-tabs-three-profile" role="tabpanel" aria-labelledby="custom-tabs-three-profile-tab">
+                  <table id="example3" class="table table-bordered table-hover">
+                  <thead>
+                  <tr>
+                      <th style="width: 50px; text-align: center;">#</th>
+                      <th>Название</th>
+                      <th>Тип данных</th>
+                      <th style="text-align: center;">Not Null</th>
+                      <th>По умолчанию</th>
+                      <th style="text-align: center;">PRIMARY KEY</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+
+                  {% for column in tableColumns %}
+                  <tr>
+                      <td style="text-align: center;">{{ column[0] }}</td>
+                      <td>{{ column[1] }}</td>
+                      <td>{{ column[2] }}</td>
+                      <td style="text-align: center;">
+                          <input type="checkbox" disabled="" {% if column[3] == 1 %}checked{% endif %}>
+                      </td>
+                      <td>{{ column[4] }}</td>
+                      <td style="text-align: center;">
+                          <input type="checkbox" disabled="" {% if column[5] == 1 %}checked{% endif %}>
+                      </td>
+                  </tr>
+                  {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <!-- /.card -->
+        </div>
+        <!-- /.card -->
+      </div>
+      <!-- /.col -->
+    </div>
+    <!-- /.row -->
+  </div>
+  <!-- /.container-fluid -->
+</section>
+<!-- /.content -->
+{% else %}
+<div style="margin-top: 250px;"></div>
+<center>
+  <h1>
+    Выберите таблицу
+  </h1>
+</center>
+{% endif %}
+
+{% endblock %}

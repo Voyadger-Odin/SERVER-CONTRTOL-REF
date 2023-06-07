@@ -1,0 +1,53 @@
+
+.CodeMirror {
+    font-size: 15px;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+}
+
+
+
+
+
+
+body{
+    margin: 0;
+    padding: 0;
+    background-color: #111111;
+}
+
+
+.info-card{
+    position: fixed;
+    width: 200px;
+    height: 200px;
+    top: calc(40% - 100px);
+    left: calc(50% - 100px);
+    background-color: #0005;
+    border-radius: 10px;
+    transition: .1s;
+    opacity: 0;
+    visibility: hidden;
+}
+.info-card-body{
+    width: 100%;
+    height: 100%;
+    font-family: "Helvetica Neue", sans-serif;
+    font-size: 30px;
+    color: #fffa;
+    font-weight: 900;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.active{
+    opacity: 1;
+    visibility: visible;
+}
+
+
+

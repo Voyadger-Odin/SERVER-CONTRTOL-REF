@@ -1,0 +1,342 @@
+<script src="../../static/scripts/filemanager.js"></script>{% extends 'base.html' %}
+
+<!------------- Title ------------->
+{% block title %}
+Файловый менеджер
+{% endblock %}
+<!--------------------------------->
+
+
+
+<!------------- Content head ------------->
+{% block content_head %}
+
+{% if (user['role'] == 'admin' or user['role'] == 'developer') %}
+<div class="card">
+  <div class="card-header">
+    <h3 class="card-title">Действия</h3>
+  </div>
+  <!-- /.card-header -->
+  <div class="card-body p-1">
+    <button type="button" class="btn btn-dark" onclick="newDir()">Новая папка</button>
+    <button type="button" class="btn btn-dark" onclick="newFile()">Новый файл</button>
+    <button type="button" class="btn btn-dark" onclick="loadFiles()">Загрузить</button>
+
+    <button id="btn-select-all-files" type="button" class="btn btn-dark" onclick="selectAllFiles()">Выделить все</button>
+    <button id="btn-deleteAllSelectedFiles" type="button" class="btn btn-danger disabled" onclick="deleteAllSelectedFilesConfirm()">Удалить выделенные</button>
+  </div>
+  <!-- /.card-body -->
+</div>
+{% endif %}
+
+{% endblock %}
+<!---------------------------------------->
+
+
+
+
+
+<!------------- Content ------------->
+
+{% block content %}
+
+<div class="card">
+  <div class="card-body p-0">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb" style="background: #0000; margin: 0;">
+        {% for item in breadcrumb %}
+
+        {% if item['active'] %}
+          <li class="breadcrumb-item active" aria-current="page">{{ item['name'] }}</li>
+        {% else %}
+          <li class="breadcrumb-item"><a href="filemanager?path={{ item['path'] }}">{{ item['name'] }}</a></li>
+        {% endif %}
+
+        {% endfor %}
+      </ol>
+    </nav>
+  </div>
+  <!-- /.card-body -->
+</div>
+
+
+<div class="card">
+  <div class="card-header">
+    <h3 class="card-title">Файлы и папки</h3>
+  </div>
+  <!-- /.card-header -->
+  <div class="card-body p-0">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th style="width: 10px;"></th>
+          <th>Имя</th>
+          <th>Размер</th>
+          <th>Создан</th>
+          <th style="width: 50px;">Действия</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for file in files %}
+        <tr class="file-item" ondblclick="{{file['dbaction']}}"
+        {% if file['type_obj']=='img' %}
+        href="{{ url_for('static', filename='HTDOCS' + file['path'] + '/' + file['name']) }}"
+        data-toggle="lightbox"
+        data-title="{{ file['name'] }}"
+        {% endif %}
+        >
+          <td>
+            <center>
+              <input onclick="deleteAllActivate()" class="btn-file-selected" type="checkbox" value="" data-name="{{file['name']}}">
+            </center>
+          </td>
+          <td><img class="file-img" src="{{ url_for('static', filename='img/' + file['icon']) }}">
+                  {{ file['name'] }}</td>
+          <td>{{ file['size'] }}</td>
+        <td>{{ file['file_createdTime'] }}</td>
+          <td>
+            <div class="input-group-prepend">
+              <button type="button" class="file-btn-action" data-toggle="dropdown">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots-vertical" viewBox="0 0 16 16">
+                  <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
+                </svg>
+              </button>
+              <div class="dropdown-menu">
+                {% for action in file['actions'] %}
+                <a class="dropdown-item" onclick="{{ action['action'] }}">{{ action['name'] }}</a>
+                {% endfor %}
+
+                {% if (user['role'] == 'admin' or user['role'] == 'developer') %}
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" onclick="renameFile('{{ file['name'] }}')">Переиминовать</a>
+                <a class="dropdown-item" onclick="deleteFile('{{ file['name'] }}')">Удалить</a>
+                {% endif %}
+              </div>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <!-- /.card-body -->
+</div>
+
+<!-- MarkDown -->
+{% if markdown %}
+<script src="https://cdn.jsdelivr.net/npm/markdown-it@13.0.1/dist/markdown-it.min.js"></script>
+
+<style>
+
+  .MarkDownWindow{
+    margin: 10px;
+  }
+
+  .MarkDownWindow img {
+    max-width: 35%;
+  }
+
+  pre {
+  display: block;
+  padding: 9.5px;
+  margin: 0 0 10px;
+  font-size: 13px;
+  line-height: 1.42857143;
+  color: #333;
+  word-break: break-all;
+  word-wrap: break-word;
+  background-color: #f5f5f5;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+  code {
+  padding: 2px 4px;
+  font-size: 90%;
+  color: #c7254e;
+  background-color: #f9f2f4;
+  border-radius: 4px;
+}
+
+</style>
+
+<div class="card">
+  <div class="card-header">
+    <h3 class="card-title">README.md</h3>
+  </div>
+  <div class="card-body p-0 MarkDownWindow" id="MarkDownWindow">
+
+  </div>
+  <!-- /.card-body -->
+</div>
+
+<script>
+let md = window.markdownit()
+let markdowntext = {{ markdownText|safe }}
+
+let result = md.render(markdowntext);
+
+$('#MarkDownWindow').html(result)
+</script>
+{% endif %}
+<!-------------->
+
+
+
+<!-- Ekko Lightbox -->
+<script src="{{ url_for('static', filename='plugins/ekko-lightbox/ekko-lightbox.min.js') }}"></script>
+<!-- Filterizr-->
+<script src="{{ url_for('static', filename='plugins/filterizr/jquery.filterizr.min.js') }}"></script>
+<!-- Script -->
+<script src="{{ url_for('static', filename='scripts/filemanager.js') }}"></script>
+
+{% endblock %}
+<!----------------------------------->
+
+
+
+
+<!------------- Modal ------------->
+{% block modal %}
+
+<!-- Создание папки -->
+<div class="modal fade" id="createFolder" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Создание папки</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <input id="create-folder-name" type="text" class="form-control" placeholder="Название папки" aria-label="Username">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+        <button type="button" class="btn btn-dark" onclick="createFolder()">Создать</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  $('#create-folder-name').keyup(function (e) {
+    if (e.keyCode === 13) {
+       createFolder()
+    }
+  });
+</script>
+
+<!-- Создание файла -->
+<div class="modal fade" id="createFile" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Создание файла</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <input id="create-file-name" type="text" class="form-control" placeholder="Название файла" aria-label="Username">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+        <button type="button" class="btn btn-dark" onclick="newFileEvent()">Создать</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  $('#create-file-name').keyup(function (e) {
+    if (e.keyCode === 13) {
+       newFileEvent()
+    }
+  });
+</script>
+
+<!-- Переиминовать файл -->
+<div class="modal fade" id="renameFile" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Переиминовать файл</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <input id="rename-file-name" type="text" class="form-control" placeholder="Название папки" aria-label="Username">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+        <button type="button" class="btn btn-dark" onclick="renameFileEvent()">Переиминовать</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  $('#rename-file-name').keyup(function (e) {
+    if (e.keyCode === 13) {
+       renameFileEvent()
+    }
+  });
+</script>
+
+<!-- Удалить файл -->
+<div class="modal fade" id="deleteFile" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Удалить файл</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+          Вы действительно хотите удалить файл <b id="delete-file-name"></b>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+        <button type="button" class="btn btn-danger" onclick="deleteFileEvent()">Удалить</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Удалить файл -->
+<div class="modal fade" id="deleteFiles" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Удалить файлы</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+          Вы действительно хотите удалить файлы: <b id="delete-files-name"></b>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+        <button type="button" class="btn btn-danger" onclick="deleteFilesEvent()">Удалить</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Загрузить файлы -->
+<div class="modal fade" id="loadFiles" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Загрузить файлы</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+            <input class="form-control" type="file" id="formFileMultiple" multiple>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+        <button type="button" class="btn btn-dark" onclick="loadFilesEvent()">Загрузить</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+{% endblock %}
+<!--------------------------------->
